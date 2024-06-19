@@ -34,9 +34,6 @@ class Game:
         self.explosions = []
         self.score = 0
 
-        self.enemies.append(Enemy(window_width, 200, -16))
-        self.enemies.append(Enemy(window_width, 600, -16, 1))
-
     def draw(self):
         self.window.fill((0, 0, 0))
 
@@ -90,7 +87,20 @@ class Game:
 
         self._checkCollisions()
 
+        self._spawnIfNeeded()
+
         return {}
+    
+    def _spawnIfNeeded(self):
+        enemies_alive = 0
+
+        for enemy in self.enemies:
+            if enemy.isAlive:
+                enemies_alive += 1
+
+        if enemies_alive == 0:
+            self.enemies.append(Enemy(self.window_width, 200, -16))
+            self.enemies.append(Enemy(self.window_width, 600, -16, 1))
     
     def _checkCollisions(self):
         
