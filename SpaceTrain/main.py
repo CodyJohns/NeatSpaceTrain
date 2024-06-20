@@ -32,8 +32,6 @@ class MainGame:
                         self.game.movingLeft(True)
                     if event.key == pygame.K_d:
                         self.game.movingRight(True)
-                    if event.key == pygame.K_SPACE:
-                        self.game.shoot(True)
                     if event.key == pygame.K_r:
                         self.game.resetGame()
                 if event.type == pygame.KEYUP:
@@ -42,6 +40,12 @@ class MainGame:
                     if event.key == pygame.K_d:
                         self.game.movingRight(False)
                     if event.key == pygame.K_SPACE:
+                        self.game.shoot(False)
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        self.game.shoot(True)
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if event.button == 1:
                         self.game.shoot(False)
 
 mainGame = MainGame()

@@ -1,4 +1,6 @@
 import pygame
+import math
+import random
 
 from train import Train
 from bullet import Bullet
@@ -24,10 +26,11 @@ class Game:
         self.enemyA_sprite = pygame.image.load("SpaceTrain/res/ship.png").convert_alpha()
         self.enemyB_sprite = pygame.image.load("SpaceTrain/res/ship2.png").convert_alpha()
         self.explosion = pygame.image.load("SpaceTrain/res/explosion.png").convert_alpha()
+        turret = pygame.image.load("SpaceTrain/res/turret.png").convert_alpha()
         font_sheet = pygame.image.load("SpaceTrain/res/font_sheet.png").convert_alpha()
 
         self.fontDrawer = FontDrawer(font_sheet)
-        self.train = Train(self.window_width, self.window_height, train_sprite)
+        self.train = Train(self.window_width, self.window_height, train_sprite, turret)
         self.bar = Bar(self.window_width, self.window_height, self.bar_sprite)
         self.enemies = []
         self.bullets = []
@@ -35,6 +38,7 @@ class Game:
         self.score = 0
 
     def draw(self):
+
         self.window.fill((0, 0, 0))
 
         self.bar.draw(self.window)
@@ -53,6 +57,7 @@ class Game:
         self.train.draw(self.window)
 
         self.fontDrawer.draw(self.window, f"Score: {self.score}", 10, 10, 20)
+        self.fontDrawer.draw(self.window, f"Health: {self.train.health}", 10, 40, 20)
 
         pygame.display.update()
 
@@ -62,17 +67,26 @@ class Game:
         self.bar.update()
 
         if shooting:
-            #use this when wanting to use mouse aiming
-            #angle = math.atan2(y - getDestY(), x - getDestX())
-            #dirX = math.cos(angle)
-	        #dirY = math.sin(angle)
-            self.bullets.append(Bullet(self.train.x + (self.train.TRAIN_WIDTH / 2) - 3, self.train.y, 1, -1))
-            self.bullets.append(Bullet(self.train.x + (self.train.TRAIN_WIDTH / 2) - 3, self.train.y, -1, -1))
-            self.bullets.append(Bullet(self.train.x + (self.train.TRAIN_WIDTH / 2) - 3, self.train.y + 60, 1, 1))
-            self.bullets.append(Bullet(self.train.x + (self.train.TRAIN_WIDTH / 2) - 3, self.train.y + 60, -1, 1))
+            mousePos = pygame.mouse.get_pos()
+            
+            if mousePos[1] < self.train.y + 30:
+                b1x = (self.train.x + (self.train.TRAIN_WIDTH / 2))
+                b1y = self.train.y
+                angle = math.atan2(mousePos[1] - b1y, mousePos[0] - b1x)
+                dirX = math.cos(angle)
+                dirY = math.sin(angle)
+                self.bullets.append(Bullet(b1x - 6, b1y - 6, dirX, dirY))
+            else:
+                b2x = (self.train.x + (self.train.TRAIN_WIDTH / 2))
+                b2y = self.train.y + 60
+                angle = math.atan2(mousePos[1] - b2y, mousePos[0] - b2x)
+                dirX = math.cos(angle)
+                dirY = math.sin(angle)
+                self.bullets.append(Bullet(b2x - 6, b2y - 6, dirX, dirY))
 
         for enemy in self.enemies:
-            enemy.update()
+            isShooting = enemy.update()
+            #if isShooting:
             if enemy.x < -100:
                 enemy.vel /= 3
                 enemy.vel *= -1
@@ -89,7 +103,12 @@ class Game:
 
         self._spawnIfNeeded()
 
-        return {}
+        return {
+            "score": self.score,
+            "posX": self.train.x,
+            #"enemies": self.enemies
+            "health": self.train.health
+        }
     
     def _spawnIfNeeded(self):
         enemies_alive = 0
@@ -99,8 +118,12 @@ class Game:
                 enemies_alive += 1
 
         if enemies_alive == 0:
-            self.enemies.append(Enemy(self.window_width, 200, -16))
-            self.enemies.append(Enemy(self.window_width, 600, -16, 1))
+            quan = random.randint(1, 6)
+            for i in range(quan):
+                type = random.randint(0, 2)
+                speed = random.randint(-30, -12)
+                y = random.randint(32, self.window_height - 32)
+                self.enemies.append(Enemy(self.window_width, y, speed, type))
     
     def _checkCollisions(self):
         
@@ -118,7 +141,7 @@ class Game:
                 if enemy.collides(bullet.x, bullet.y, bullet.BULLET_WIDTH, bullet.BULLET_HEIGHT):
                     enemy.isAlive = False
                     bullet.isAlive = False
-                    self.explosions.append(Explosion(enemy.x, enemy.y))
+                    self.explosions.append(Explosion(bullet.x, bullet.y))
                     self.score += 10 + (enemy.enemy_type * 10)
 
     def _drawRail(self):

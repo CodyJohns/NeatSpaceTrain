@@ -8,7 +8,7 @@ class Bullet(Entity):
     img_size_height = 2
     BULLET_WIDTH = 12
     BULLET_HEIGHT = 12
-    BULLET_SPEED = 10
+    BULLET_SPEED = 18
 
     def __init__(self, x, y, dirX, dirY):
         self.isAlive = True

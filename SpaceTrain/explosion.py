@@ -26,7 +26,7 @@ class Explosion(Drawable):
         sprite.blit(sheet, (0, 0), (self.frame * self.img_size_width, 0, self.img_size_width, self.img_size_height))
         sprite.set_colorkey((0, 0, 0))
         sprite = pygame.transform.scale(sprite, (self.SPRITE_WIDTH, self.SPRITE_HEIGHT))
-        window.blit(sprite, (self.x, self.y))
+        window.blit(sprite, (self.x - (self.SPRITE_WIDTH / 2), self.y - (self.SPRITE_HEIGHT / 2)))
 
     def _update(self):
         self.frame_delay_counter += 1

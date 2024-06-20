@@ -6,6 +6,8 @@ class Enemy(Entity):
 
     ENEMY_TYPE_A = 0
     ENEMY_TYPE_B = 1
+    ENEMY_A_SHOOT_DELAY = 20
+    ENEMY_B_SHOOT_DELAY = 10
     SPRITE_WIDTH = 48
     SPRITE_HEIGHT = 48
     ENEMY_MIN_VEL = 6
@@ -20,6 +22,7 @@ class Enemy(Entity):
         self.x = x
         self.y = y
         self.vel = vel
+        self.shoot_counter = 0
 
     def draw(self, window, img):
         if not self.isAlive:
@@ -35,6 +38,15 @@ class Enemy(Entity):
     
     def update(self):
         self.x += self.vel
+        self.shoot_counter += 1
+
+        shoot_delay = self.ENEMY_A_SHOOT_DELAY if self.enemy_type == self.ENEMY_TYPE_A else self.ENEMY_B_SHOOT_DELAY
+
+        if self.shoot_counter > shoot_delay:
+            self.shoot_counter = 0
+            return True
+        else:
+            return False
     
     def reset(self):
         pass
