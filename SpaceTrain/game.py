@@ -14,10 +14,11 @@ pygame.init()
 
 class Game:
 
-    def __init__(self, window, window_width, window_height):
+    def __init__(self, window, window_width, window_height, ai = False):
         self.window = window
         self.window_width = window_width
         self.window_height = window_height
+        self.ai = ai
 
         train_sprite = pygame.image.load("SpaceTrain/res/train.png").convert_alpha()
         self.bullet_sprite = pygame.image.load("SpaceTrain/res/bullet.png").convert_alpha()
@@ -30,12 +31,14 @@ class Game:
         font_sheet = pygame.image.load("SpaceTrain/res/font_sheet.png").convert_alpha()
 
         self.fontDrawer = FontDrawer(font_sheet)
-        self.train = Train(self.window_width, self.window_height, train_sprite, turret)
+        self.train = Train(self, self.window_width, self.window_height, train_sprite, turret)
         self.bar = Bar(self.window_width, self.window_height, self.bar_sprite)
         self.enemies = []
         self.bullets = []
         self.explosions = []
         self.score = 0
+        self.shotsFired = 0
+        self.mousePos = (0, 0)
 
     def draw(self):
 
@@ -67,7 +70,8 @@ class Game:
         self.bar.update()
 
         if shooting:
-            mousePos = pygame.mouse.get_pos()
+            self.shotsFired += 1
+            mousePos = self.mousePos if self.ai else pygame.mouse.get_pos()
             
             if mousePos[1] < self.train.y + 30:
                 b1x = (self.train.x + (self.train.TRAIN_WIDTH / 2))
@@ -105,11 +109,20 @@ class Game:
 
         return {
             "score": self.score,
-            "posX": self.train.x,
-            #"enemies": self.enemies
+            "posX": self.train.x + (self.train.TRAIN_WIDTH / 2),
+            "mousePos": self.mousePos,
+            "shots": self.shotsFired,
+            "enemiesPos": self._getEnemiesAlive(),
             "health": self.train.health
         }
     
+    def _getEnemiesAlive(self):
+        alive = []
+
+        for enemy in self.enemies:
+            if enemy.isAlive:
+                alive.append((enemy.x + 24, enemy.y + 24))
+
     def _spawnIfNeeded(self):
         enemies_alive = 0
 
@@ -151,6 +164,9 @@ class Game:
         sprite = pygame.transform.scale(sprite, (self.window_width * 2, 8))
         self.window.blit(sprite, (0, (self.window_height - 4) / 2))
 
+    def setMousePos(self, x, y):
+        self.mousePos = (x, y)
+
     def resetGame(self):
         self.train.reset()
         self.bar.reset()
@@ -159,6 +175,8 @@ class Game:
         self.bullets = []
         self.explosions = []
         self.score = 0
+        self.shotsFired = 0
+        self.mousePos = (0, 0)
         
     def movingLeft(self, value):
         self.train.moving_left = value

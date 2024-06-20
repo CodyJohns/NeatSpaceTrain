@@ -13,7 +13,7 @@ class Train(Entity):
     frame_update_delay = 10
     shooting_delay = 12
 
-    def __init__(self, screen_width, screen_height, sprite_img, turret_img):
+    def __init__(self, gameInstance, screen_width, screen_height, sprite_img, turret_img):
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.x = (screen_width - self.TRAIN_WIDTH) / 2
@@ -30,9 +30,10 @@ class Train(Entity):
         self.top_angle = 180
         self.bottom_angle = 0
         self.health = 100
+        self.gameInstance = gameInstance
 
     def draw(self, window):
-        mousePos = pygame.mouse.get_pos()
+        mousePos = self.gameInstance.mousePos if self.gameInstance.ai else pygame.mouse.get_pos()
 
         sprite = pygame.Surface([self.img_size_width, self.img_size_height])
         sprite.blit(self.image, (0, 0), (0, self.frame * self.img_size_height, self.img_size_width, self.img_size_height))

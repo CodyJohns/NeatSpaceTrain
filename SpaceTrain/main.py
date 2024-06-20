@@ -48,6 +48,9 @@ class MainGame:
                     if event.button == 1:
                         self.game.shoot(False)
 
+    def train(self):
+        
+
 mainGame = MainGame()
 
 mainGame.start()
