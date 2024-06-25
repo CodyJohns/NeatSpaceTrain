@@ -38,13 +38,14 @@ class Game:
         self.explosions = []
         self.score = 0
         self.shotsFired = 0
-        self.mousePos = (0, 0)
+        self.mousePos = [0, 0]
 
     def draw(self):
 
         self.window.fill((0, 0, 0))
 
-        self.bar.draw(self.window)
+        if not self.ai:
+            self.bar.draw(self.window)
 
         self._drawRail()
 
@@ -110,6 +111,8 @@ class Game:
         return {
             "score": self.score,
             "posX": self.train.x + (self.train.TRAIN_WIDTH / 2),
+            "posY": self.train.y + 30,
+            "isShooting": self.train.shooting,
             "mousePos": self.mousePos,
             "shots": self.shotsFired,
             "enemiesPos": self._getEnemiesAlive(),
@@ -121,7 +124,9 @@ class Game:
 
         for enemy in self.enemies:
             if enemy.isAlive:
-                alive.append((enemy.x + 24, enemy.y + 24))
+                alive.append((enemy.x + 24, enemy.y + 24, enemy.vel))
+
+        return alive
 
     def _spawnIfNeeded(self):
         enemies_alive = 0
@@ -165,7 +170,7 @@ class Game:
         self.window.blit(sprite, (0, (self.window_height - 4) / 2))
 
     def setMousePos(self, x, y):
-        self.mousePos = (x, y)
+        self.mousePos = [x, y]
 
     def resetGame(self):
         self.train.reset()
