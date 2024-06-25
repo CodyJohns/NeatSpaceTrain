@@ -121,8 +121,11 @@ class MainGame:
 
             normMouseX = game_stats["mousePos"][0] / self.width
             normMouseY = game_stats["mousePos"][1] / self.height
+            normPosX = game_stats["posX"] / self.width
+            normPosY = game_stats["posY"] / self.height
+            shooting = 0 if not game_stats["isShooting"] else 1
 
-            input_data = [game_stats["posX"], game_stats["posY"], game_stats["isShooting"], normMouseX, normMouseY]
+            input_data = [normPosX, normPosY, shooting, normMouseX, normMouseY]
 
             #only closest 3 enemies
             for i in range(3 if len(game_stats["enemiesPos"]) >= 3 else len(game_stats["enemiesPos"])):
@@ -180,6 +183,8 @@ class MainGame:
             #punish the genome if the mouse coords arent valid
             if denormMouseX > self.width or denormMouseY > self.height or denormMouseX < 0 or denormMouseY < 0:
                 genome.fitness -= 1
+
+            #maybe penalize the distance of the mouse from the closest enemy?
 
             self.game.setMousePos(denormMouseX, denormMouseY)
 
