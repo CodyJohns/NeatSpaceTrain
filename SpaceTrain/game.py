@@ -191,5 +191,7 @@ class Game:
 
     def shoot(self, value):
         self.train.shooting = value
-        self.train.shooting_counter = self.train.shooting_delay
+        
+        if not self.ai:
+            self.train.shooting_counter = self.train.shooting_delay
 
