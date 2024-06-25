@@ -11,7 +11,7 @@ class Train(Entity):
     img_size_height = 15
     max_frames = 3
     frame_update_delay = 10
-    shooting_delay = 12
+    shooting_delay = 24 #change back to 12
 
     def __init__(self, gameInstance, screen_width, screen_height, sprite_img, turret_img):
         self.screen_width = screen_width
