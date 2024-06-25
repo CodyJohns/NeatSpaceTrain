@@ -144,14 +144,14 @@ class MainGame:
                     input_data.append(0)
                     input_data.append(0)
 
-            assert(len(input_data) == 20)
+            if not len(input_data) == 20:
+                print(f"Input Data: {input_data}")
+                raise AssertionError(f"Expected 20 inputs, but got {len(input_data)} instead")
 
             #inputs:
             # (posX, posY, isShooting, mousePosX, mousePosY, enemy data...)
 
             output = nn.activate(input_data)
-
-            #print(output)
 
             #outputs:
             # 0:movingLeft
