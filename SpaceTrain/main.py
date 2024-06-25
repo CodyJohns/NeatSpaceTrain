@@ -76,19 +76,33 @@ class MainGame:
 
             normMouseX = game_stats["mousePos"][0] / self.width
             normMouseY = game_stats["mousePos"][1] / self.height
+            normPosX = game_stats["posX"] / self.width
+            normPosY = game_stats["posY"] / self.height
+            shooting = 0 if not game_stats["isShooting"] else 1
 
-            input_data = [game_stats["posX"], normMouseX, normMouseY]
+            input_data = [normPosX, normPosY, shooting, normMouseX, normMouseY]
 
             #only closest 3 enemies
-            for i in range(6 if len(game_stats["enemiesPos"]) >= 6 else len(game_stats["enemiesPos"])):
-                input_data.append(game_stats["enemiesPos"][i])
+            for i in range(3 if len(game_stats["enemiesPos"]) >= 3 else len(game_stats["enemiesPos"])):
+                input_data.append(game_stats["enemiesPos"][i][0] / self.width)
+                input_data.append(game_stats["enemiesPos"][i][1] / self.height)
+                input_data.append(abs(game_stats["enemiesPos"][i][2]) / self.width) #velocity
+                input_data.append(abs(game_stats["enemiesPos"][i][0] - game_stats["posX"]) / self.width) #relative x pos
+                input_data.append(abs(game_stats["enemiesPos"][i][1] - game_stats["posY"]) / self.height) #relative y pos
 
             #if less than 3 enemies then fill with zeroes
-            if len(game_stats["enemiesPos"]) < 6:
-                for i in range(6 - len(game_stats["enemiesPos"])):
+            if len(game_stats["enemiesPos"]) < 3:
+                for i in range(3 - len(game_stats["enemiesPos"])):
+                    input_data.append(0)
+                    input_data.append(0)
+                    input_data.append(0)
+                    input_data.append(0)
                     input_data.append(0)
 
-            assert(len(input_data) == 9)
+            if not len(input_data) == 20:
+                print(f"Input Data: {input_data}")
+                raise AssertionError(f"Expected 20 inputs, but got {len(input_data)} instead")
+
             output = nn.activate(input_data)
 
             move_threshold = 0
@@ -237,4 +251,4 @@ if __name__ == '__main__':
 
     mainGame.runNeat(config)
     #mainGame.start() #play normally
-    mainGame.testBest(config)
+    #mainGame.testBest(config)
