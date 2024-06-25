@@ -227,7 +227,7 @@ class MainGame:
         p.add_reporter(stats)
         p.add_reporter(neat.Checkpointer(1))
 
-        winner = p.run(self.evaluate, 1)
+        winner = p.run(self.evaluate, 100)
         with open("best_model.pickle", "wb") as f:
             pickle.dump(winner, f)
 
