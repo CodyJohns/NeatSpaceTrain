@@ -206,8 +206,8 @@ class MainGame:
             self.train(genome, config)
 
     def runNeat(self, config):
-        p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-49')
-        #p = neat.Population(config)
+        #p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-49')
+        p = neat.Population(config)
         p.add_reporter(neat.StdOutReporter(True))
         stats = neat.StatisticsReporter()
         p.add_reporter(stats)
