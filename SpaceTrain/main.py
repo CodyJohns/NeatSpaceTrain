@@ -218,10 +218,6 @@ class MainGame:
                 break
 
     def evaluate(self, genomes, config):
-        window = pygame.display.set_mode((self.width, self.height), vsync=1)
-        pygame.display.set_caption("Space Train")
-        self.game = Game(window, self.width, self.height, ai=True)
-
         for i, (genome_id, genome) in enumerate(genomes):
             genome.fitness = 0
 
@@ -229,6 +225,10 @@ class MainGame:
             self.game.resetGame()
 
     def runNeat(self, config):
+        window = pygame.display.set_mode((self.width, self.height), vsync=1)
+        pygame.display.set_caption("Space Train")
+        self.game = Game(window, self.width, self.height, ai=True)
+
         #p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-49')
         p = neat.Population(config)
         p.add_reporter(neat.StdOutReporter(True))
