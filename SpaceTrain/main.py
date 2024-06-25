@@ -124,6 +124,8 @@ class MainGame:
 
         nn = neat.nn.FeedForwardNetwork.create(genome, config)
 
+        old_x = 0
+
         while loop:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -179,11 +181,17 @@ class MainGame:
 
             #discourage staying still
             if (output[0] <= move_threshold and output[1] <= move_threshold) or (output[0] > move_threshold and output[1] > move_threshold):
-                genome.fitness -= 0.05
+                genome.fitness -= 0.1
+
+            #penalize if trying to keep moving left or right when at limit
+            if (output[0] > move_threshold or output[1] > move_threshold) and old_x == game_stats["posX"]:
+                genome.fitness -= 0.1
+
+            old_x = game_stats["posX"]
 
             #punish the genome if there are enemies and it isn't shooting
-            if output[2] <= shoot_threshold and len(game_stats["enemiesPos"]) > 0:
-                genome.fitness -= 1
+            #if output[2] <= shoot_threshold and len(game_stats["enemiesPos"]) > 0:
+            #    genome.fitness -= 1
 
             #maybe penalize if they shoot too much?
             
@@ -204,7 +212,7 @@ class MainGame:
 
             duration = time.time() - start_time
 
-            if game_stats["score"] > 0 or game_stats["shots"] > 50 or duration > 10:
+            if game_stats["score"] > 0 or duration > 10:
                 #calculate fitness
                 genome.fitness += (game_stats["score"] * 100) - duration #add health later
                 break
@@ -212,12 +220,13 @@ class MainGame:
     def evaluate(self, genomes, config):
         window = pygame.display.set_mode((self.width, self.height), vsync=1)
         pygame.display.set_caption("Space Train")
+        self.game = Game(window, self.width, self.height, ai=True)
 
         for i, (genome_id, genome) in enumerate(genomes):
             genome.fitness = 0
-            self.game = Game(window, self.width, self.height, ai=True)
 
             self.train(genome, config)
+            self.game.resetGame()
 
     def runNeat(self, config):
         #p = neat.Checkpointer.restore_checkpoint('neat-checkpoint-49')
