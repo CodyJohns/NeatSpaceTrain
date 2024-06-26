@@ -125,6 +125,7 @@ class MainGame:
         nn = neat.nn.FeedForwardNetwork.create(genome, config)
 
         old_x = 0
+        max_duration = 8
 
         while loop:
             for event in pygame.event.get():
@@ -213,8 +214,8 @@ class MainGame:
             duration = time.time() - start_time
 
             if duration > 8 or game_stats["score"] > 200:
-                #calculate fitness
-                genome.fitness += (game_stats["score"] * 100) #add health later
+                #calculate fitness using score multiplier and how quickly they shot down enough enemies for 200 points
+                genome.fitness += (game_stats["score"] * 100) + (abs(duration - max_duration) * 10) #add health later
                 break
 
     def evaluate(self, genomes, config):
