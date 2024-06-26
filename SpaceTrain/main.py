@@ -56,7 +56,7 @@ class MainGame:
     def test(self, nn):
         window = pygame.display.set_mode((self.width, self.height), vsync=1)
         pygame.display.set_caption("Space Train")
-        self.game = Game(window, self.width, self.height)
+        self.game = Game(window, self.width, self.height, testing=True)
         
         clock = pygame.time.Clock()
 
@@ -112,8 +112,8 @@ class MainGame:
             self.game.movingRight(output[1] > move_threshold)
             self.game.shoot(output[2] > shoot_threshold)
 
-            denormMouseX = int(output[3] * self.width)
-            denormMouseY = int(output[4] * self.height)
+            denormMouseX = output[3] * self.width
+            denormMouseY = output[4] * self.height
 
             self.game.setMousePos(denormMouseX, denormMouseY)
 
@@ -199,8 +199,8 @@ class MainGame:
             self.game.movingRight(output[1] > move_threshold)
             self.game.shoot(output[2] > shoot_threshold)
 
-            denormMouseX = (output[3] * self.width)
-            denormMouseY = (output[4] * self.height)
+            denormMouseX = output[3] * self.width
+            denormMouseY = output[4] * self.height
 
             #punish the genome if the mouse coords arent valid
             if denormMouseX > self.width or denormMouseY > self.height or denormMouseX < 0 or denormMouseY < 0:

@@ -14,11 +14,12 @@ pygame.init()
 
 class Game:
 
-    def __init__(self, window, window_width, window_height, ai = False):
+    def __init__(self, window, window_width, window_height, ai = False, testing = False):
         self.window = window
         self.window_width = window_width
         self.window_height = window_height
         self.ai = ai
+        self.testing = testing
 
         train_sprite = pygame.image.load("SpaceTrain/res/train.png").convert_alpha()
         self.bullet_sprite = pygame.image.load("SpaceTrain/res/bullet.png").convert_alpha()
@@ -72,7 +73,7 @@ class Game:
 
         if shooting:
             self.shotsFired += 1
-            mousePos = self.mousePos if self.ai else pygame.mouse.get_pos()
+            mousePos = self.mousePos if self.ai or self.testing else pygame.mouse.get_pos()
             
             if mousePos[1] < self.train.y + 30:
                 b1x = (self.train.x + (self.train.TRAIN_WIDTH / 2))
@@ -202,6 +203,6 @@ class Game:
     def shoot(self, value):
         self.train.shooting = value
 
-        if not self.ai:
+        if not (self.ai or self.testing):
             self.train.shooting_counter = self.train.shooting_delay
 

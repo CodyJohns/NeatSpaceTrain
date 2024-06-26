@@ -33,7 +33,7 @@ class Train(Entity):
         self.gameInstance = gameInstance
 
     def draw(self, window):
-        mousePos = self.gameInstance.mousePos if self.gameInstance.ai else pygame.mouse.get_pos()
+        mousePos = self.gameInstance.mousePos if self.gameInstance.ai or self.gameInstance.testing else pygame.mouse.get_pos()
 
         sprite = pygame.Surface([self.img_size_width, self.img_size_height])
         sprite.blit(self.image, (0, 0), (0, self.frame * self.img_size_height, self.img_size_width, self.img_size_height))
