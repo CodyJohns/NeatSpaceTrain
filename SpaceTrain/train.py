@@ -107,4 +107,4 @@ class Train(Entity):
                 self.frame = 0
 
     def getDimensions(self):
-        pass
+        return self.x, self.y, self.TRAIN_WIDTH, self.TRAIN_HEIGHT

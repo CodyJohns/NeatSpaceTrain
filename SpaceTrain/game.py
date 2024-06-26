@@ -164,14 +164,20 @@ class Game:
         for enemy in self.enemies:
             if not enemy.isAlive:
                 continue
+
             for bullet in self.bullets:
                 if not bullet.isAlive:
                     continue
-                if enemy.collides(bullet.x, bullet.y, bullet.BULLET_WIDTH, bullet.BULLET_HEIGHT):
+                if enemy.collides(bullet):
                     enemy.isAlive = False
                     bullet.isAlive = False
                     self.explosions.append(Explosion(bullet.x, bullet.y))
                     self.score += 10 + (enemy.enemy_type * 10)
+
+            if enemy.collides(self.train):
+                enemy.isAlive = False
+                self.explosions.append(Explosion(enemy.x + 24, enemy.y + 24))
+            
 
     def _drawRail(self):
         sprite = pygame.Surface([2, 2])
