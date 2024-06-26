@@ -212,7 +212,7 @@ class MainGame:
 
             duration = time.time() - start_time
 
-            if game_stats["score"] > 0 or duration > 10:
+            if duration > 8:# or game_stats["score"] > 0:
                 #calculate fitness
                 genome.fitness += (game_stats["score"] * 100) - duration #add health later
                 break
