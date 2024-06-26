@@ -214,7 +214,7 @@ class MainGame:
 
             if duration > 8:# or game_stats["score"] > 0:
                 #calculate fitness
-                genome.fitness += (game_stats["score"] * 100) - duration #add health later
+                genome.fitness += (game_stats["score"] * 100) #add health later
                 break
 
     def evaluate(self, genomes, config):
