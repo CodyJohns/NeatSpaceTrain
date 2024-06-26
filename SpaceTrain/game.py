@@ -61,7 +61,7 @@ class Game:
         self.train.draw(self.window)
 
         self.fontDrawer.draw(self.window, f"Score: {self.score}", 10, 10, 20)
-        self.fontDrawer.draw(self.window, f"Health: {self.train.health}", 10, 40, 20)
+        #self.fontDrawer.draw(self.window, f"Health: {self.train.health}", 10, 40, 20)
 
         pygame.display.update()
 
@@ -124,9 +124,19 @@ class Game:
 
         for enemy in self.enemies:
             if enemy.isAlive:
-                alive.append((enemy.x + 24, enemy.y + 24, enemy.vel))
+                relX = abs(enemy.x - (self.train.x + (self.train.TRAIN_WIDTH / 2)))
+                relY = abs(enemy.y - (self.train.y + 30))
+                alive.append(
+                    (enemy.x + 24, 
+                     enemy.y + 24, 
+                     enemy.vel, 
+                     relX, 
+                     relY,
+                     math.sqrt(relX**2 + relY**2)
+                    )
+                )
 
-        return alive
+        return sorted(alive, key=lambda x: x[5])
 
     def _spawnIfNeeded(self):
         enemies_alive = 0
@@ -191,7 +201,7 @@ class Game:
 
     def shoot(self, value):
         self.train.shooting = value
-        
+
         if not self.ai:
             self.train.shooting_counter = self.train.shooting_delay
 

@@ -148,8 +148,8 @@ class MainGame:
                 input_data.append(game_stats["enemiesPos"][i][0] / self.width)
                 input_data.append(game_stats["enemiesPos"][i][1] / self.height)
                 input_data.append(abs(game_stats["enemiesPos"][i][2]) / self.width) #velocity
-                input_data.append(abs(game_stats["enemiesPos"][i][0] - game_stats["posX"]) / self.width) #relative x pos
-                input_data.append(abs(game_stats["enemiesPos"][i][1] - game_stats["posY"]) / self.height) #relative y pos
+                input_data.append(game_stats["enemiesPos"][i][3] / self.width) #relative x pos
+                input_data.append(game_stats["enemiesPos"][i][4] / self.height) #relative y pos
 
             #if less than 3 enemies then fill with zeroes
             if len(game_stats["enemiesPos"]) < 3:
@@ -212,7 +212,7 @@ class MainGame:
 
             duration = time.time() - start_time
 
-            if duration > 8:# or game_stats["score"] > 0:
+            if duration > 8 or game_stats["score"] > 200:
                 #calculate fitness
                 genome.fitness += (game_stats["score"] * 100) #add health later
                 break
@@ -258,6 +258,6 @@ if __name__ == '__main__':
     
     mainGame = MainGame()
 
-    mainGame.runNeat(config)
-    #mainGame.start() #play normally
+    #mainGame.runNeat(config)
+    mainGame.start() #play normally
     #mainGame.testBest(config)
