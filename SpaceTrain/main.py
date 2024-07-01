@@ -182,19 +182,13 @@ class MainGame:
 
             #discourage staying still
             if (output[0] <= move_threshold and output[1] <= move_threshold) or (output[0] > move_threshold and output[1] > move_threshold):
-                genome.fitness -= 0.1
+                genome.fitness -= 1
 
             #penalize if trying to keep moving left or right when at limit
             if (output[0] > move_threshold or output[1] > move_threshold) and old_x == game_stats["posX"]:
-                genome.fitness -= 0.1
+                genome.fitness -= 1
 
             old_x = game_stats["posX"]
-
-            #punish the genome if there are enemies and it isn't shooting
-            #if output[2] <= shoot_threshold and len(game_stats["enemiesPos"]) > 0:
-            #    genome.fitness -= 1
-
-            #maybe penalize if they shoot too much?
             
             self.game.movingLeft(output[0] > move_threshold)
             self.game.movingRight(output[1] > move_threshold)
@@ -207,13 +201,11 @@ class MainGame:
             if denormMouseX > self.width or denormMouseY > self.height or denormMouseX < 0 or denormMouseY < 0:
                 genome.fitness -= 1
 
-            #maybe penalize the distance of the mouse from the closest enemy?
-
             self.game.setMousePos(denormMouseX, denormMouseY)
 
             duration = time.time() - start_time
 
-            if duration > 8 or game_stats["score"] > 200:
+            if duration > max_duration or game_stats["score"] > 300:
                 #calculate fitness using score multiplier and how quickly they shot down enough enemies for 200 points
                 genome.fitness += (game_stats["score"] * 100) + (abs(duration - max_duration) * 10) #add health later
                 break
