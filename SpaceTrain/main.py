@@ -182,11 +182,11 @@ class MainGame:
 
             #discourage staying still
             if (output[0] <= move_threshold and output[1] <= move_threshold) or (output[0] > move_threshold and output[1] > move_threshold):
-                genome.fitness -= 1
+                genome.fitness -= 5
 
             #penalize if trying to keep moving left or right when at limit
             if (output[0] > move_threshold or output[1] > move_threshold) and old_x == game_stats["posX"]:
-                genome.fitness -= 1
+                genome.fitness -= 5
 
             old_x = game_stats["posX"]
             
@@ -199,7 +199,7 @@ class MainGame:
 
             #punish the genome if the mouse coords arent valid
             if denormMouseX > self.width or denormMouseY > self.height or denormMouseX < 0 or denormMouseY < 0:
-                genome.fitness -= 1
+                genome.fitness -= 5
 
             self.game.setMousePos(denormMouseX, denormMouseY)
 
